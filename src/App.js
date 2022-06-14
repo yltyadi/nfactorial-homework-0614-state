@@ -73,6 +73,22 @@ function App() {
       ? items.filter((item) => item.done)
       : items.filter((item) => !item.done);
 
+  const makeImportant = ({key}) => {
+      setItems((prevItems) => 
+      prevItems.map((item) => {
+        if (item.key === key) {
+          return {...item, important: !item.important};
+        } else {
+          return item;
+        }
+      })
+    );
+  }
+
+  const deleteItem = () => {
+    // smth
+  }
+
   return (
     <div className="todo-app">
       {/* App-header */}
@@ -118,10 +134,11 @@ function App() {
           filteredArray.map((item) => (
             <li key={item.key} className="list-group-item">
             <span className={`todo-list-item ${item.done?"done":""}`}>
-              <span className="todo-list-item-label" onClick={()=>handleItemDone(item)}>{item.label}</span>
+              <span className={`todo-list-item-label ${item.important ? "important" : ""}`} onClick={()=>handleItemDone(item)}>{item.label}</span>
               <button
                 type="button"
                 className="btn btn-outline-success btn-sm float-right"
+                onClick={()=>makeImportant(item)}
               >
                 <i className="fa fa-exclamation" />
               </button>
@@ -129,6 +146,7 @@ function App() {
               <button
                 type="button"
                 className="btn btn-outline-danger btn-sm float-right"
+                onClick={deleteItem}
               >
                 <i className="fa fa-trash-o" />
               </button>

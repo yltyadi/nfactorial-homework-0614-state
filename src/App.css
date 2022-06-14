@@ -71,3 +71,8 @@
   font-weight: bold;
   color: steelblue;
 }
+
+.todo-list-item-label.important {
+  font-weight: bold;
+  color: steelblue;
+}
