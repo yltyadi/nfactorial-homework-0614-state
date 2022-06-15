@@ -36,6 +36,7 @@ function App() {
   ]);
 
   const [filterType, setFilterType] = useState("all");
+  const [searchItem, setSearchItem] = useState();
 
   const handleToDoChange = (event) => {
     setItemToDo(event.target.value);
@@ -68,10 +69,10 @@ function App() {
 
   const filteredArray =
       filterType === "all"
-      ? items
-      : filterType === "done"
-      ? items.filter((item) => item.done)
-      : items.filter((item) => !item.done);
+      ? (!searchItem ? items : items.filter((item) => (item.label.includes(searchItem))))
+      : (filterType === "done"
+      ? (items.filter((item) => !searchItem ? item.done : item.done && item.label.includes(searchItem)))
+      : (items.filter((item) => !searchItem ? !item.done : !item.done && item.label.includes(searchItem))));
 
   const makeImportant = ({key}) => {
       setItems((prevItems) => 
@@ -85,8 +86,14 @@ function App() {
     );
   }
 
-  const deleteItem = () => {
-    // smth
+  const handleSearchItem = (event) => {
+    setSearchItem(event.target.value);
+  };
+
+  const deleteItem = ({key}) => {
+    setItems((prevItems) => 
+      prevItems.filter((item) => (item.key !== key))
+    );
   }
 
   return (
@@ -101,8 +108,10 @@ function App() {
         {/* Search-panel */}
         <input
           type="text"
+          value={searchItem}
           className="form-control search-input"
           placeholder="type to search"
+          onChange={handleSearchItem}
         />
         {/* Item-status-filter */}
         <div className="btn-group">
@@ -114,16 +123,6 @@ function App() {
               {item.label}
             </button>
           ))}
-          
-          {/* <button type="button" className="btn btn-info">
-            All
-          </button>
-          <button type="button" className="btn btn-info btn-outline-secondary">
-            Active
-          </button>
-          <button type="button" className="btn btn-info btn-outline-secondary">
-            Done
-          </button> */}
         </div>
       </div>
 
@@ -146,34 +145,13 @@ function App() {
               <button
                 type="button"
                 className="btn btn-outline-danger btn-sm float-right"
-                onClick={deleteItem}
+                onClick={()=>deleteItem(item)}
               >
                 <i className="fa fa-trash-o" />
               </button>
             </span>
             </li>
         ))}
-
-        {/* Important item */}
-        {/* <li className="list-group-item">
-          <span className="todo-list-item important">
-            <span className="todo-list-item-label">Important Item</span>
-
-            <button
-              type="button"
-              className="btn btn-outline-success btn-sm float-right"
-            >
-              <i className="fa fa-exclamation" />
-            </button>
-
-            <button
-              type="button"
-              className="btn btn-outline-danger btn-sm float-right"
-            >
-              <i className="fa fa-trash-o" />
-            </button>
-          </span>
-        </li> */}
       </ul>
 
       <div className="item-add-form d-flex">
